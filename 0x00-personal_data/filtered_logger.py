@@ -51,6 +51,24 @@ def get_db() -> connector.connection.MySQLConnection:
     return connection
 
 
+def main() -> None:
+    """returns nothing"""
+    logger = get_logger()
+    db = get_db()
+    db_cursor = db.cursor(dictionary=True)
+
+    query = "SELECT * FROM users"
+    db_cursor.execute(query)
+
+    rows = db_cursor.fetchall()
+    for row in rows:
+        msg = "; ".join([f"{key}={val}" for key, val in row.items()])
+        logger.info(msg)
+
+    db_cursor.close()
+    db.close()
+
+
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class
         """
@@ -68,3 +86,7 @@ class RedactingFormatter(logging.Formatter):
         initial_msg = super().format(record)  # Retrieves the original formatted message  # nopep8
         filter_msg = filter_datum(self.FIELDS, self.REDACTION, initial_msg, self.SEPARATOR)  # nopep8
         return filter_msg
+
+
+if __name__ == "__main__":
+    main()
