@@ -4,6 +4,8 @@ import re
 from typing import List
 import logging
 
+PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
+
 
 def filter_datum(fields: List[str], redaction: str, message: str, separator: str) -> str:  # nopep8
     """returns the log message obfuscated"""
@@ -11,6 +13,21 @@ def filter_datum(fields: List[str], redaction: str, message: str, separator: str
         pattern = fr"{val}=.*?(?={separator})"
         message = re.sub(pattern, f"{val}={redaction}", message)
     return message
+
+
+def get_logger() -> logging.Logger:
+    """takes no arguments and returns a logging.Logger object"""
+    logger = logging.getLogger('user_data')
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    stream_handler = logging.StreamHandler()
+    formatter = RedactingFormatter(PII_FIELDS)
+    stream_handler.setFormatter(formatter)
+
+    logger.addHandler(stream_handler)
+
+    return logger
 
 
 class RedactingFormatter(logging.Formatter):
@@ -27,6 +44,6 @@ class RedactingFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """filter values in incoming log records using filter_datum"""
-        initial_msg = super().format(record)
+        initial_msg = super().format(record)  # Retrieves the original formatted message  # nopep8
         filter_msg = filter_datum(self.FIELDS, self.REDACTION, initial_msg, self.SEPARATOR)  # nopep8
         return filter_msg
