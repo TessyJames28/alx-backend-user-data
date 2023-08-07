@@ -1,4 +1,4 @@
-#!/bin/usr/env python3
+#!/usr/bin/env python3
 """Basic Authorization"""
 from api.v1.auth.auth import Auth
 
