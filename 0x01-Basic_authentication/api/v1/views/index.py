@@ -30,3 +30,9 @@ def stats() -> str:
 def error_handler() -> str:
     """an endpoint for unauthorized error handling"""
     raise abort(401)
+
+
+@app_views.route('/forbidden', strict_slashes=False)
+def forbidden_error() -> str:
+    """an endpoint for unauthorized error handling"""
+    raise abort(403)
