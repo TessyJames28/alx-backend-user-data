@@ -61,13 +61,15 @@ class DB:
         then will update the user’s attributes as passed in the method’s
         arguments then commit changes to the database.
         """
-        user = self.find_user_by(id=user_id)
-
-        if not user:
+        try:
+            user = self.find_user_by(id=user_id)
+        except NoResultFound:
             raise ValueError
 
         for key, val in kwargs.items():
             if hasattr(user, key):
                 setattr(user, key, val)
+            else:
+                raise ValueError
 
         self._session.commit()
