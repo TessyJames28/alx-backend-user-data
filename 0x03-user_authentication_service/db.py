@@ -40,7 +40,7 @@ class DB:
         self._session.commit()
         return user
 
-    def find_user_by(self, **kwargs: dict) -> User:
+    def find_user_by(self, **kwargs) -> User:
         """returns the first row found in the users table"""
         keys = ["id", "email", "hashed_password", "session_id", "reset_token"]
         try:
