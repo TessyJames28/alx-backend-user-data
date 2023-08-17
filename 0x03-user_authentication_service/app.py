@@ -69,7 +69,7 @@ def profile():
     session_id = request.cookies.get(session_id)
     user = AUTH._db.find_user_by(session_id=session_id)
     if not user:
-        return abort(403)
+        abort(403)
     return jsonify({"email": "{}".format(user.email)}), 200
 
 
@@ -79,7 +79,7 @@ def get_reset_password_token():
     email = request.form.get("email")
     user = AUTH._db.find_user_by(email=email)
     if not user:
-        return abort(403)
+        abort(403)
     token = AUTH.get_reset_password_token(email)
     value = {
         "email": "{}".format(email),
@@ -96,7 +96,7 @@ def update_password():
     try:
         AUTH.update_password(reset_token, new_passwd)
     except valueError:
-        return abort(403)
+        abort(403)
 
     return jsonify({"email": f"{email}", "message": "Password updated"}), 200
 
