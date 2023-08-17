@@ -53,7 +53,7 @@ def login():
 def logout():
     """logout function"""
     session_id = request.cookies.get("session_id")
-    user = AUTH.get_user_from_session_id(session_id)
+    user = AUTH._db.find_user_by(session_id=session_id)
     if user is None or session_id is None:
         abort(403)
     else:
