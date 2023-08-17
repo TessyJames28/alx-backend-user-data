@@ -93,5 +93,5 @@ class Auth:
             user = self._db.find_user_by(reset_token=reset_token)
             hash_passwd = _hash_password(password)
             self._db.update_user(user.id, hashed_password=hash_passwd, reset_token=None)  # nopep8
-        except ValueError as e:
-            raise e
+        except NoResultFound:
+            raise ValueError
