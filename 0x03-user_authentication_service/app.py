@@ -64,11 +64,11 @@ def logout():
 @app.route("/profile", strict_slashes=False)
 def profile():
     """profile function"""
-    session_id = request.cookies.get(session_id)
-    user = AUTH._db.find_user_by(session_id=session_id)
-    if not user:
-        abort(403)
-    return jsonify({"email": "{}".format(user.email)}), 200
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        return jsonify({"email": "{}".format(user.email)}), 200
+    abort(403)
 
 
 @app.route("/reset_password", strict_slashes=False, methods=["POST"])
