@@ -17,7 +17,8 @@ def _hash_password(password: str) -> bytes:
 
 def _generate_uuid() -> str:
     """return a string representation of a new UUID"""
-    return str(uuid.uuid4())
+    unique_id = str(uuid.uuid4())
+    return unique_id
 
 
 class Auth:
@@ -45,8 +46,7 @@ class Auth:
         try:
             user = self._db.find_user_by(email=email)
             passwd = password.encode('utf-8')
-            if user:
-                return bcrypt.checkpw(passwd, user.hashed_password)
+            return bcrypt.checkpw(passwd, user.hashed_password)
         except NoResultFound:
             return False
 
