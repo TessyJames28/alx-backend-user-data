@@ -45,8 +45,9 @@ class Auth:
         try:
             user = self._db.find_user_by(email=email)
             passwd = password.encode('utf-8')
-            return bcrypt.checkpw(passwd, user.hashed_password)
-        except Exception:
+            if user:
+                return bcrypt.checkpw(passwd, user.hashed_password)
+        except NoResultFound:
             return False
 
     def create_session(self, email: str) -> str:
@@ -70,7 +71,7 @@ class Auth:
         """Destroy session method"""
         user = self._db.find_user_by(id=user_id)
         if user:
-            self._db.update_user(user.session_id=None)
+            self._db.update_user(user_id, session_id=None)
             return user.session_id
 
     def get_reset_password_token(self, email: str) -> str:
@@ -87,10 +88,6 @@ class Auth:
         try:
             user = self._db.find_user_by(reset_token=reset_token)
             hash_passwd = _hash_password(password)
-            data = {
-                hashed_password = hash_passwd,
-                reset_token = None
-                    }
-            self._db.update_user(user.id, data)
+            self._db.update_user(user.id, hashed_password=hash_passwd, reset_token=None)  # nopep8
         except ValueError as e:
             raise e
