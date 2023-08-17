@@ -49,22 +49,22 @@ def login():
         return response
 
 
-@app.route("/sessions", strict_slashes=False, methods=["POST"])
+@app.route("/sessions", strict_slashes=False, methods=["DELETE"])
 def logout():
     """logout function"""
-    session_id = request.header.cookie["session_id"]
+    session_id = request.cookies.get(session_id)
     user = AUTH._db.find_user_by(session_id=session_id)
     if user:
         AUTH.destroy_session(user.id)
         return redirect("/")
     else:
-        return abort(403)
+        abort(403)
 
 
 @app.route("/profile", strict_slashes=False)
 def profile():
     """profile function"""
-    session_id = request.header.cookie["session_id"]
+    session_id = request.cookies.get(session_id)
     user = AUTH._db.find_user_by(session_id=session_id)
     if not user:
         return abort(403)
